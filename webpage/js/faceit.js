@@ -33,6 +33,47 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
 	});
 });
+
+function faceit(fName){
+	$('#faceit').html(" ");
+	$('#flag').attr("src", '' );
+	$.getJSON('https://api.faceit.com/core/v1/nicknames/'+fName, function(json)
+	{
+		un_id = json.payload.guid;
+		var cflag = json.payload.country;
+		cflag = cflag.toUpperCase();
+		$('#flag').attr("src", 'https://cdn.faceit.com/frontend/335/assets/images/flags/' + cflag + '.png' );
+	    $('#faceit').html("<b class='shadow'>ELO: " + json.payload.games.csgo.faceit_elo + "<br> Level: " + json.payload.games.csgo.skill_level + "</b>");
+	    lastThreeStats(un_id);
+	    lifetimeStats(un_id);
+	});
+}
+
+function lastThreeStats(un_id){
+	$.getJSON('https://api.faceit.com/stats/v1/stats/time/users/'+ un_id +'/games/csgo?page=0&size=3', function(jObj)
+	{
+		var kills = 0;
+	    var deaths = 0;
+	    var k_d = 0;
+		for(var i=0; i<3; i++)
+	        {
+	        	match = jObj[i];
+	        	kills = kills + parseFloat(match.i6);
+	        	deaths = deaths + parseFloat(match.i8);
+	        }
+	    k_d = kills / deaths;
+	    k_d = k_d.toFixed(2);
+	    $( "#faceit" ).append("<br><b class='shadow'>K/D: " + k_d + " @ last 3</b>");
+	});
+}
+
+function lifetimeStats(un_id){
+	$.getJSON('https://api.faceit.com/stats/v1/stats/users/'+ un_id +'/games/csgo', function(jObj)
+	{
+	    $( "#faceit" ).append("<br><b class='shadow'>K/D: " + jObj.lifetime.k5 + " @ " + jObj.lifetime.m1 + "</b>");
+	});
+}
+/*
 function none_block(fName)
 {
 	//inviz -> viz;
@@ -74,7 +115,6 @@ function faceit(fName){
 	fName = "";
 	none_block(fName);
 }
-
 function kd_stats(){
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onload = function () {
@@ -116,5 +156,4 @@ function l_kd_stats(){
 	xmlhttp.open("GET", url + un_id + url_p2, true);
 	xmlhttp.send();
 }
-
-// http://jsfiddle.net/GvdSy/1357/ LOADINGBAR http://jsfiddle.net/GvdSy/
+*/

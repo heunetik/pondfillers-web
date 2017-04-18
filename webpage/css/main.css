@@ -251,8 +251,8 @@ p.header {
   flex-direction: row;
   -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
-  -webkit-justify-content: space-around;
-  justify-content: space-around;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
   margin-top: 1.3rem;
 }
 
@@ -367,6 +367,9 @@ h1 i {
    left:5px;
    top:-1px;
    width:100%;
+}
+.shadow {
+  text-shadow: 1px 1px 2px black; 
 }
 .noselect, p, a, input {
   -webkit-touch-callout: none; /* iOS Safari */
