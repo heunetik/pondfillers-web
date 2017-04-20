@@ -150,7 +150,7 @@
     this.canvas.height = this.height;
 
     if (this.nightMode) {
-      this.ctx.fillStyle = '#ffffff';
+      this.ctx.fillStyle = '#61C5FA';
     } else {
       this.ctx.fillStyle = '#000000';
     }
@@ -163,11 +163,11 @@
       this.nodes[i] = new Node(this);
     }
   };
-
+  // BGCOLORS ^v
   NodeGarden.prototype.toggleNightMode = function () {
     this.nightMode = !this.nightMode;
     if (this.nightMode) {
-      this.ctx.fillStyle = '#ffffff';
+      this.ctx.fillStyle = '#61C5FA';
       document.body.classList.add('nightmode');
     } else {
       this.ctx.fillStyle = '#000000';
@@ -197,6 +197,7 @@
       nodeA = this.nodes[i];
       for (var j = i + 1; j < this.nodes.length; j++) {
         nodeB = this.nodes[j];
+        // GRAVITY STRENGTH
         var squaredDistance = nodeA.squaredDistanceTo(nodeB);
 
         // calculate gravity force
@@ -228,10 +229,11 @@
 
         // draw gravity lines
         this.ctx.beginPath();
+        // LINE COLOR
         if (this.nightMode) {
-          this.ctx.strokeStyle = 'rgba(191,191,191,' + (opacity < 1 ? opacity : 1) + ')';
+          this.ctx.strokeStyle = 'rgba(207,237,253,' + (opacity < 1 ? opacity : 1) + ')';
         } else {
-          this.ctx.strokeStyle = 'rgba(63,63,63,' + (opacity < 1 ? opacity : 1) + ')';
+          this.ctx.strokeStyle = 'rgba(255,63,63,' + (opacity < 1 ? opacity : 1) + ')';
         }
         this.ctx.moveTo(nodeA.x, nodeA.y);
         this.ctx.lineTo(nodeB.x, nodeB.y);

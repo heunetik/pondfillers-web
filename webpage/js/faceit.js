@@ -33,9 +33,15 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
 	});
 });
+function getUserName() {
+    var nameField = document.getElementById('nameField').value;
+    $('#stats').hide();
+    faceit(nameField);
+}
 
 function faceit(fName){
-	$('#faceit').html(" ");
+	var faceit = $('#faceit');
+	faceit.html(" ");
 	$('#flag').attr("src", '' );
 	$.getJSON('https://api.faceit.com/core/v1/nicknames/'+fName, function(json)
 	{
@@ -43,13 +49,15 @@ function faceit(fName){
 		var cflag = json.payload.country;
 		cflag = cflag.toUpperCase();
 		$('#flag').attr("src", 'https://cdn.faceit.com/frontend/335/assets/images/flags/' + cflag + '.png' );
-	    $('#faceit').html("<b class='shadow'>ELO: " + json.payload.games.csgo.faceit_elo + "<br> Level: " + json.payload.games.csgo.skill_level + "</b>");
-	    lastThreeStats(un_id);
-	    lifetimeStats(un_id);
-	});
+	    faceit.html("<b class='shadow'>ELO: " + json.payload.games.csgo.faceit_elo + "<br> Level: " + json.payload.games.csgo.skill_level + "</b>");
+	    //lastmatches();	    
+	    
+	}).done(function() {
+    	lastThreeStats(un_id,faceit);
+  	});
 }
 
-function lastThreeStats(un_id){
+function lastThreeStats(un_id,faceit){
 	$.getJSON('https://api.faceit.com/stats/v1/stats/time/users/'+ un_id +'/games/csgo?page=0&size=3', function(jObj)
 	{
 		var kills = 0;
@@ -63,16 +71,53 @@ function lastThreeStats(un_id){
 	        }
 	    k_d = kills / deaths;
 	    k_d = k_d.toFixed(2);
-	    $( "#faceit" ).append("<br><b class='shadow'>K/D: " + k_d + " @ last 3</b>");
-	});
+	    faceit.append("<br><b class='shadow'>K/D: " + k_d + " @ last 3</b>");
+	}).done(function() {
+    	lifetimeStats(un_id,faceit);
+  	});
 }
 
-function lifetimeStats(un_id){
+function lifetimeStats(un_id,faceit){
 	$.getJSON('https://api.faceit.com/stats/v1/stats/users/'+ un_id +'/games/csgo', function(jObj)
 	{
-	    $( "#faceit" ).append("<br><b class='shadow'>K/D: " + jObj.lifetime.k5 + " @ " + jObj.lifetime.m1 + "</b>");
+	    faceit.append("<br><b class='shadow'>K/D: " + jObj.lifetime.k5 + " @ " + jObj.lifetime.m1 + "</b>");
+	    $('#stats').show();
 	});
 }
+/* WORK IN PROGRESS
+function lastmatches(un_id){
+	$.getJSON('https://api.faceit.com/stats/v1/stats/time/users/06b6394e-795d-4e8e-bfd3-79f9581607b1/games/csgo?page=0&size=5', function(jObj)
+	{
+		for(var i=0; i<5; i++)
+	        {
+	        	alert(jObj[i].i5);
+	        }
+	    //k_d = kills / deaths;
+	    //k_d = k_d.toFixed(2);
+	    //$( "#faceit" ).append("<br><b class='shadow'>K/D: " + k_d + " @ last 3</b>");
+	});
+}
+*/
+
+// XML PARSER
+/*
+$(function(){
+  //Sample XML    
+  var xml = "<?xml version='1.0' ?><doc><person><name>Sachin</name><age>21</age></person><person><name>Akash</name><age>18</age></person></doc>";
+  //Parse the givn XML
+  var xmlDoc = $.parseXML( xml ); 
+  var $xml = $(xmlDoc);
+    // Find Person Tag
+  var $person = $xml.find("person");
+  
+  $person.each(function(){
+    var name = $(this).find('name').text();
+    var age = $(this).find('age').text();
+    $("#ProfileList" ).append('<li>' +name+ ' - ' +age+ '</li>');
+   });
+});
+*/
+
 /*
 function none_block(fName)
 {
@@ -80,10 +125,7 @@ function none_block(fName)
 	document.getElementById("stats").style.display="block";
 }
 
-function getUserName() {
-    var nameField = document.getElementById('nameField').value;
-    faceit(nameField);
-}
+
 function faceit(fName){
 	document.getElementById("kd").innerHTML = "";
 	var xmlhttp = new XMLHttpRequest();
